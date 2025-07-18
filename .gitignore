@@ -29,4 +29,5 @@ bin/
 
 ### Other ###
 node_modules
+build
 .env
