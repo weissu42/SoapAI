@@ -213,12 +213,3 @@ export const OILS_DATABASE: Oil[] = [
 export const findOilById = (id: string): Oil | undefined => {
   return OILS_DATABASE.find(oil => oil.id === id);
 };
-
-export const getOilsByCategory = () => {
-  return {
-    hard: OILS_DATABASE.filter(oil => oil.properties.hardness > 40),
-    soft: OILS_DATABASE.filter(oil => oil.properties.hardness <= 40),
-    cleansing: OILS_DATABASE.filter(oil => oil.properties.cleansing > 20),
-    conditioning: OILS_DATABASE.filter(oil => oil.properties.conditioning > 50)
-  };
-};

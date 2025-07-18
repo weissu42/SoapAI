@@ -1,5 +1,5 @@
 import React from 'react';
-import { Recipe } from '../types/Recipe';
+import {Recipe} from '../types/Recipe';
 
 interface RecipeListProps {
   recipes: Recipe[];
@@ -7,7 +7,7 @@ interface RecipeListProps {
   onEdit: (recipe: Recipe) => void;
 }
 
-const RecipeList: React.FC<RecipeListProps> = ({ recipes, onDelete, onEdit }) => {
+const RecipeList: React.FC<RecipeListProps> = ({recipes, onDelete, onEdit}) => {
   if (recipes.length === 0) {
     return (
       <div className="recipe-list">
@@ -26,14 +26,14 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes, onDelete, onEdit }) =>
             <div className="recipe-header">
               <h3>{recipe.name}</h3>
               <div className="recipe-actions">
-                <button 
+                <button
                   onClick={() => onEdit(recipe)}
                   className="edit-btn"
                   title="Rezept bearbeiten"
                 >
                   ✏️
                 </button>
-                <button 
+                <button
                   onClick={() => onDelete(recipe.id)}
                   className="delete-btn"
                   title="Rezept löschen"
@@ -42,11 +42,11 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes, onDelete, onEdit }) =>
                 </button>
               </div>
             </div>
-            
+
             {recipe.description && (
               <p className="recipe-description">{recipe.description}</p>
             )}
-            
+
             <div className="recipe-soap-oils">
               <h4>Öle und Fette:</h4>
               <ul>
@@ -68,8 +68,9 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes, onDelete, onEdit }) =>
                 {recipe.calculations.citricAcidWeight && (
                   <div><strong>Zitronensäure:</strong> {recipe.calculations.citricAcidWeight}g</div>
                 )}
-                {recipe.calculations.additionalNaohForCitricAcid && (
-                  <div><strong>Zusätzliche NaOH:</strong> {recipe.calculations.additionalNaohForCitricAcid}g</div>
+                {recipe.calculations.naohForCitricAcid && (
+                  <div><strong>Zusätzliche NaOH:</strong> {recipe.calculations.naohForCitricAcid}g
+                  </div>
                 )}
               </div>
             </div>
@@ -97,14 +98,7 @@ const RecipeList: React.FC<RecipeListProps> = ({ recipes, onDelete, onEdit }) =>
                 </ul>
               </div>
             )}
-            
-            {recipe.instructions && (
-              <div className="recipe-instructions">
-                <h4>Anleitung:</h4>
-                <p>{recipe.instructions}</p>
-              </div>
-            )}
-            
+
             {recipe.notes && (
               <div className="recipe-notes">
                 <h4>Notizen:</h4>

@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Recipe, Ingredient, SoapOil } from '../types/Recipe';
-import { OILS_DATABASE } from '../data/oils';
-import { calculateSoapFormula, validateSoapRecipe, SoapIngredient, DEFAULT_SUPERFAT_PERCENTAGE, DEFAULT_WATER_PERCENTAGE } from '../utils/soapCalculations';
+import React, {useState, useEffect} from 'react';
+import {Recipe, Ingredient, SoapOil} from '../types/Recipe';
+import {OILS_DATABASE} from '../data/oils';
+import {
+  calculateSoapFormula,
+  validateSoapRecipe,
+  SoapIngredient,
+  DEFAULT_SUPERFAT_PERCENTAGE,
+  DEFAULT_WATER_PERCENTAGE
+} from '../utils/soapCalculations';
 
 interface SoapRecipeFormProps {
   onSubmit: (recipe: Omit<Recipe, 'id'>) => void;
@@ -10,17 +16,19 @@ interface SoapRecipeFormProps {
   isEditing?: boolean;
 }
 
-const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe, onCancel, isEditing = false }) => {
+const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({onSubmit, initialRecipe, onCancel, isEditing = false}) => {
   const [recipe, setRecipe] = useState<Omit<Recipe, 'id'>>({
     name: '',
     description: '',
-    ingredients: [{ name: '', amount: '', unit: 'g' }],
-    soapOils: [{ oilId: '', oilName: '', weight: 0, percentage: 0 }],
+    ingredients: [{name: '', amount: '', unit: 'g'}],
+    soapOils: [{oilId: '', oilName: '', weight: 0, percentage: 0}],
     calculations: {
       totalOilWeight: 0,
       naohWeight: 0,
       waterWeight: 0,
       superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
+      citricAcidWeight: 0,
+      naohForCitricAcid: 0,
       properties: {
         hardness: 0,
         cleansing: 0,
@@ -42,7 +50,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
   // Initialisiere Formular mit existierendem Rezept beim Bearbeiten
   useEffect(() => {
     if (isEditing && initialRecipe) {
-      const { id, ...recipeData } = initialRecipe;
+      const {id, ...recipeData} = initialRecipe;
       setRecipe(recipeData);
     }
   }, [isEditing, initialRecipe]);
@@ -70,7 +78,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
   }, [recipe.soapOils, recipe.superfatPercentage, recipe.citricAcidPercentage, recipe.waterPercentage]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
     if (name === 'superfatPercentage') {
       setRecipe(prev => ({
         ...prev,
@@ -105,7 +113,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
 
   const handleOilChange = (index: number, field: keyof SoapOil, value: string | number) => {
     const newOils = [...recipe.soapOils];
-    
+
     if (field === 'oilId') {
       const oil = OILS_DATABASE.find(o => o.id === value);
       newOils[index] = {
@@ -138,7 +146,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
   const addIngredient = () => {
     setRecipe(prev => ({
       ...prev,
-      ingredients: [...prev.ingredients, { name: '', amount: '', unit: 'g' }]
+      ingredients: [...prev.ingredients, {name: '', amount: '', unit: 'g'}]
     }));
   };
 
@@ -155,7 +163,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
   const addOil = () => {
     setRecipe(prev => ({
       ...prev,
-      soapOils: [...prev.soapOils, { oilId: '', oilName: '', weight: 0, percentage: 0 }]
+      soapOils: [...prev.soapOils, {oilId: '', oilName: '', weight: 0, percentage: 0}]
     }));
   };
 
@@ -177,13 +185,15 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
         setRecipe({
           name: '',
           description: '',
-          ingredients: [{ name: '', amount: '', unit: 'g' }],
-          soapOils: [{ oilId: '', oilName: '', weight: 0, percentage: 0 }],
+          ingredients: [{name: '', amount: '', unit: 'g'}],
+          soapOils: [{oilId: '', oilName: '', weight: 0, percentage: 0}],
           calculations: {
             totalOilWeight: 0,
             naohWeight: 0,
             waterWeight: 0,
             superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
+            naohForCitricAcid: 0,
+            citricAcidWeight: 0,
             properties: {
               hardness: 0,
               cleansing: 0,
@@ -194,7 +204,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
               ins: 0
             }
           },
-                notes: '',
+          notes: '',
           superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
           citricAcidPercentage: 0,
           waterPercentage: DEFAULT_WATER_PERCENTAGE
@@ -328,11 +338,11 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
               {recipe.calculations.citricAcidWeight && (
                 <div><strong>Zitronensäure:</strong> {recipe.calculations.citricAcidWeight}g</div>
               )}
-              {recipe.calculations.additionalNaohForCitricAcid && (
-                <div><strong>Zusätzliche NaOH:</strong> {recipe.calculations.additionalNaohForCitricAcid}g</div>
+              {recipe.calculations.naohForCitricAcid && (
+                <div><strong>Zusätzliche NaOH:</strong> {recipe.calculations.naohForCitricAcid}g</div>
               )}
             </div>
-            
+
             <h4>Seifeneigenschaften:</h4>
             <div className="properties-grid">
               <div>Härte: {recipe.calculations.properties.hardness}</div>

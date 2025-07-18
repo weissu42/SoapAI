@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import SoapRecipeForm from './components/SoapRecipeForm';
 import RecipeList from './components/RecipeList';
-import { Recipe } from './types/Recipe';
+import {Recipe} from './types/Recipe';
 
 type ViewType = 'list' | 'create' | 'edit';
 
@@ -12,14 +12,14 @@ function App() {
   const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
 
   const addRecipe = (recipe: Omit<Recipe, 'id'>) => {
-    setRecipes([...recipes, { ...recipe, id: Date.now() }]);
+    setRecipes([...recipes, {...recipe, id: Date.now()}]);
     setCurrentView('list');
   };
 
   const updateRecipe = (recipe: Omit<Recipe, 'id'>) => {
     if (editingRecipe) {
-      setRecipes(recipes.map(r => 
-        r.id === editingRecipe.id ? { ...recipe, id: editingRecipe.id } : r
+      setRecipes(recipes.map(r =>
+        r.id === editingRecipe.id ? {...recipe, id: editingRecipe.id} : r
       ));
       setEditingRecipe(null);
       setCurrentView('list');
@@ -45,13 +45,13 @@ function App() {
       <header className="App-header">
         <h1>Seifenrezept-App</h1>
         <nav>
-          <button 
+          <button
             className={currentView === 'list' ? 'active' : ''}
             onClick={() => setCurrentView('list')}
           >
             Rezepte anzeigen
           </button>
-          <button 
+          <button
             className={currentView === 'create' ? 'active' : ''}
             onClick={() => setCurrentView('create')}
           >
@@ -59,19 +59,19 @@ function App() {
           </button>
         </nav>
       </header>
-      
+
       <main>
         {currentView === 'list' ? (
-          <RecipeList recipes={recipes} onDelete={deleteRecipe} onEdit={startEdit} />
+          <RecipeList recipes={recipes} onDelete={deleteRecipe} onEdit={startEdit}/>
         ) : currentView === 'edit' ? (
-          <SoapRecipeForm 
-            onSubmit={updateRecipe} 
-            initialRecipe={editingRecipe} 
+          <SoapRecipeForm
+            onSubmit={updateRecipe}
+            initialRecipe={editingRecipe}
             onCancel={cancelEdit}
             isEditing={true}
           />
         ) : (
-          <SoapRecipeForm onSubmit={addRecipe} />
+          <SoapRecipeForm onSubmit={addRecipe}/>
         )}
       </main>
     </div>

@@ -1,4 +1,5 @@
-import { findOilById } from '../data/oils';
+import {findOilById} from '../data/oils';
+import {SoapCalculations} from "../types/Recipe";
 
 export const DEFAULT_SUPERFAT_PERCENTAGE = 10;
 export const DEFAULT_WATER_PERCENTAGE = 30;
@@ -13,8 +14,8 @@ export interface SoapCalculationResult {
   naohWeight: number;
   waterWeight: number;
   superfatPercentage: number;
-  citricAcidWeight?: number;
-  additionalNaohForCitricAcid?: number;
+  citricAcidWeight: number;
+  additionalNaohForCitricAcid: number;
   properties: {
     hardness: number;
     cleansing: number;
@@ -31,14 +32,15 @@ export interface SoapCalculationResult {
  * @param ingredients Array von Öl-Zutaten mit Gewicht
  * @param superfatPercentage Überfettungsgrad (standardmäßig 10%)
  * @param citricAcidPercentage Anteil Zitronensäure
+ * @param waterPercentage Anteil Wasser
  * @returns Berechnungsergebnis mit NaOH-Menge und Eigenschaften
  */
 export const calculateSoapFormula = (
   ingredients: SoapIngredient[],
   superfatPercentage: number = DEFAULT_SUPERFAT_PERCENTAGE,
-  citricAcidPercentage?: number,
+  citricAcidPercentage: number = 0,
   waterPercentage: number = DEFAULT_WATER_PERCENTAGE
-): SoapCalculationResult => {
+): SoapCalculations => {
   let totalOilWeight = 0;
   let totalSapValue = 0;
   let weightedProperties = {
@@ -57,10 +59,10 @@ export const calculateSoapFormula = (
     if (oil) {
       totalOilWeight += ingredient.weight;
       totalSapValue += (oil.sapValue * ingredient.weight);
-      
+
       // Gewichtete Eigenschaften berechnen
       Object.keys(weightedProperties).forEach(key => {
-        weightedProperties[key as keyof typeof weightedProperties] += 
+        weightedProperties[key as keyof typeof weightedProperties] +=
           oil.properties[key as keyof typeof oil.properties] * ingredient.weight;
       });
     }
@@ -68,7 +70,7 @@ export const calculateSoapFormula = (
 
   // Eigenschaften normalisieren (durch Gesamtgewicht teilen)
   Object.keys(weightedProperties).forEach(key => {
-    weightedProperties[key as keyof typeof weightedProperties] = 
+    weightedProperties[key as keyof typeof weightedProperties] =
       Math.round((weightedProperties[key as keyof typeof weightedProperties] / totalOilWeight) * 100) / 100;
   });
 
@@ -79,18 +81,18 @@ export const calculateSoapFormula = (
   ) / 100;
 
   // Zitronensäure-Berechnungen
-  let citricAcidWeight: number | undefined;
-  let additionalNaohForCitricAcid: number | undefined;
+  let citricAcidWeight: number = 0;
+  let naohForCitricAcid: number = 0;
   let totalNaohWeight = naohWeight;
 
   if (citricAcidPercentage && citricAcidPercentage > 0) {
     // Zitronensäure-Menge berechnen (% des Ölgewichts)
     citricAcidWeight = Math.round((totalOilWeight * citricAcidPercentage / 100) * 100) / 100;
-    
+
     // Zusätzliche NaOH-Menge für Zitronensäure-Neutralisation
     // 1g Zitronensäure neutralisiert 0.624g NaOH
-    additionalNaohForCitricAcid = Math.round((citricAcidWeight * 0.624) * 100) / 100;
-    totalNaohWeight = Math.round((naohWeight + additionalNaohForCitricAcid) * 100) / 100;
+    naohForCitricAcid = Math.round((citricAcidWeight * 0.624) * 100) / 100;
+    totalNaohWeight = Math.round((naohWeight + naohForCitricAcid) * 100) / 100;
   }
 
   // Wassermenge berechnen (Standard 30% des Ölgewichts)
@@ -102,19 +104,9 @@ export const calculateSoapFormula = (
     waterWeight,
     superfatPercentage,
     citricAcidWeight,
-    additionalNaohForCitricAcid,
+    naohForCitricAcid,
     properties: weightedProperties
   };
-};
-
-/**
- * Konvertiert Verseifungszahl von KOH zu NaOH
- * @param kohSapValue Verseifungszahl für KOH
- * @returns Verseifungszahl für NaOH
- */
-export const convertKohToNaoh = (kohSapValue: number): number => {
-  // Umrechnungsfaktor: KOH Molekulargewicht (56.1) / NaOH Molekulargewicht (40.0)
-  return kohSapValue * (40.0 / 56.1);
 };
 
 /**

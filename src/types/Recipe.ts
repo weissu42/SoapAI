@@ -16,8 +16,8 @@ export interface SoapCalculations {
   naohWeight: number;
   waterWeight: number;
   superfatPercentage: number;
-  citricAcidWeight?: number;
-  additionalNaohForCitricAcid?: number;
+  citricAcidWeight: number;
+  naohForCitricAcid: number;
   properties: {
     hardness: number;
     cleansing: number;
