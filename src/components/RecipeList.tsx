@@ -1,5 +1,9 @@
 import React from 'react';
-import {Recipe} from '../types/Recipe';
+import {Recipe, SoapOil} from '../types/Recipe';
+
+export const sortOilsByWeight = (oils: SoapOil[]): SoapOil[] => {
+  return [...oils].sort((a, b) => b.weight - a.weight);
+};
 
 interface RecipeListProps {
   recipes: Recipe[];
@@ -50,11 +54,12 @@ const RecipeList: React.FC<RecipeListProps> = ({recipes, onDelete, onEdit}) => {
             <div className="recipe-soap-oils">
               <h4>Öle und Fette:</h4>
               <ul>
-                {recipe.soapOils.map((oil, index) => (
-                  <li key={index}>
-                    {oil.oilName} - {oil.weight}g ({oil.percentage}%)
-                  </li>
-                ))}
+                {sortOilsByWeight(recipe.soapOils)
+                  .map((oil, index) => (
+                    <li key={index}>
+                      {oil.oilName} - {oil.weight}g ({oil.percentage}%)
+                    </li>
+                  ))}
               </ul>
             </div>
 
