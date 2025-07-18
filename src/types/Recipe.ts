@@ -36,7 +36,6 @@ export interface Recipe {
   ingredients: Ingredient[];
   soapOils: SoapOil[];
   calculations: SoapCalculations;
-  instructions: string;
   notes: string;
   superfatPercentage: number;
   citricAcidPercentage?: number;

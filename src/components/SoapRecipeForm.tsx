@@ -31,7 +31,6 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
         ins: 0
       }
     },
-    instructions: '',
     notes: '',
     superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
     citricAcidPercentage: 0,
@@ -195,8 +194,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
               ins: 0
             }
           },
-          instructions: '',
-          notes: '',
+                notes: '',
           superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
           citricAcidPercentage: 0,
           waterPercentage: DEFAULT_WATER_PERCENTAGE
@@ -398,17 +396,6 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
           <button type="button" onClick={addIngredient} className="add-ingredient">
             Zutat hinzufügen
           </button>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="instructions">Anleitung:</label>
-          <textarea
-            id="instructions"
-            name="instructions"
-            value={recipe.instructions}
-            onChange={handleInputChange}
-            rows={5}
-          />
         </div>
 
         <div className="form-group">
