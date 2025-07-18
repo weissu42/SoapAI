@@ -2,7 +2,7 @@ export interface Oil {
   id: string;
   name: string;
   nameDE: string;
-  sapValue: number; // Verseifungszahl für NaOH (mg NaOH/g)
+  sapValue: number; // Saponification value for NaOH (mg NaOH/g)
   properties: {
     hardness: number;
     cleansing: number;

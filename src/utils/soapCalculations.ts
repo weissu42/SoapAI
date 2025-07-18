@@ -9,31 +9,13 @@ export interface SoapIngredient {
   weight: number; // in grams
 }
 
-export interface SoapCalculationResult {
-  totalOilWeight: number;
-  naohWeight: number;
-  waterWeight: number;
-  superfatPercentage: number;
-  citricAcidWeight: number;
-  additionalNaohForCitricAcid: number;
-  properties: {
-    hardness: number;
-    cleansing: number;
-    conditioning: number;
-    bubbly: number;
-    creamy: number;
-    iodine: number;
-    ins: number;
-  };
-}
-
 /**
- * Berechnet die benötigte NaOH-Menge für eine Seifenrezeptur
- * @param ingredients Array von Öl-Zutaten mit Gewicht
- * @param superfatPercentage Überfettungsgrad (standardmäßig 10%)
- * @param citricAcidPercentage Anteil Zitronensäure
- * @param waterPercentage Anteil Wasser
- * @returns Berechnungsergebnis mit NaOH-Menge und Eigenschaften
+ * Calculates the required NaOH amount for a soap recipe
+ * @param ingredients Array of oil ingredients with weight
+ * @param superfatPercentage Superfat percentage (default 10%)
+ * @param citricAcidPercentage Citric acid percentage
+ * @param waterPercentage Water percentage
+ * @returns Calculation result with NaOH amount and properties
  */
 export const calculateSoapFormula = (
   ingredients: SoapIngredient[],
@@ -53,14 +35,14 @@ export const calculateSoapFormula = (
     ins: 0
   };
 
-  // Berechne Gesamtgewicht und gewichtete Eigenschaften
+  // Calculate total weight and weighted properties
   ingredients.forEach(ingredient => {
     const oil = findOilById(ingredient.oilId);
     if (oil) {
       totalOilWeight += ingredient.weight;
       totalSapValue += (oil.sapValue * ingredient.weight);
 
-      // Gewichtete Eigenschaften berechnen
+      // Calculate weighted properties
       Object.keys(weightedProperties).forEach(key => {
         weightedProperties[key as keyof typeof weightedProperties] +=
           oil.properties[key as keyof typeof oil.properties] * ingredient.weight;
@@ -68,34 +50,34 @@ export const calculateSoapFormula = (
     }
   });
 
-  // Eigenschaften normalisieren (durch Gesamtgewicht teilen)
+  // Normalize properties (divide by total weight)
   Object.keys(weightedProperties).forEach(key => {
     weightedProperties[key as keyof typeof weightedProperties] =
       Math.round((weightedProperties[key as keyof typeof weightedProperties] / totalOilWeight) * 100) / 100;
   });
 
-  // NaOH-Menge berechnen
-  // Formel: (Gesamte Verseifungszahl * Ölgewicht / 1000) * (1 - Überfettung/100)
+  // Calculate NaOH amount
+  // Formula: (Total saponification value * Oil weight / 1000) * (1 - Superfat/100)
   const naohWeight = Math.round(
     (totalSapValue / 1000) * (1 - superfatPercentage / 100) * 100
   ) / 100;
 
-  // Zitronensäure-Berechnungen
+  // Citric acid calculations
   let citricAcidWeight: number = 0;
   let naohForCitricAcid: number = 0;
   let totalNaohWeight = naohWeight;
 
   if (citricAcidPercentage && citricAcidPercentage > 0) {
-    // Zitronensäure-Menge berechnen (% des Ölgewichts)
+    // Calculate citric acid amount (% of oil weight)
     citricAcidWeight = Math.round((totalOilWeight * citricAcidPercentage / 100) * 100) / 100;
 
-    // Zusätzliche NaOH-Menge für Zitronensäure-Neutralisation
-    // 1g Zitronensäure neutralisiert 0.624g NaOH
+    // Additional NaOH amount for citric acid neutralization
+    // 1g citric acid neutralizes 0.624g NaOH
     naohForCitricAcid = Math.round((citricAcidWeight * 0.624) * 100) / 100;
     totalNaohWeight = Math.round((naohWeight + naohForCitricAcid) * 100) / 100;
   }
 
-  // Wassermenge berechnen (Standard 30% des Ölgewichts)
+  // Calculate water amount (default 30% of oil weight)
   const waterWeight = Math.round((totalOilWeight * waterPercentage / 100) * 100) / 100;
 
   return {
@@ -110,9 +92,9 @@ export const calculateSoapFormula = (
 };
 
 /**
- * Berechnet die Eigenschaften einer Seifenrezeptur
- * @param ingredients Array von Öl-Zutaten
- * @returns Objekt mit berechneten Eigenschaften
+ * Calculates the properties of a soap recipe
+ * @param ingredients Array of oil ingredients
+ * @returns Object with calculated properties
  */
 export const calculateSoapProperties = (ingredients: SoapIngredient[]) => {
   const result = calculateSoapFormula(ingredients);
@@ -120,34 +102,34 @@ export const calculateSoapProperties = (ingredients: SoapIngredient[]) => {
 };
 
 /**
- * Validiert eine Seifenrezeptur auf sinnvolle Werte
- * @param ingredients Array von Öl-Zutaten
- * @returns Array von Warnungen oder leeres Array
+ * Validates a soap recipe for reasonable values
+ * @param ingredients Array of oil ingredients
+ * @returns Array of warnings or empty array
  */
 export const validateSoapRecipe = (ingredients: SoapIngredient[]): string[] => {
   const warnings: string[] = [];
   const properties = calculateSoapProperties(ingredients);
 
   if (properties.hardness < 29) {
-    warnings.push('Die Seife könnte zu weich werden (Härte < 29)');
+    warnings.push('The soap might become too soft (Hardness < 29)');
   }
   if (properties.hardness > 54) {
-    warnings.push('Die Seife könnte zu hart werden (Härte > 54)');
+    warnings.push('The soap might become too hard (Hardness > 54)');
   }
   if (properties.cleansing > 22) {
-    warnings.push('Die Seife könnte zu aggressiv reinigen (Reinigung > 22)');
+    warnings.push('The soap might cleanse too aggressively (Cleansing > 22)');
   }
   if (properties.conditioning < 44) {
-    warnings.push('Die Seife könnte zu wenig pflegend sein (Pflege < 44)');
+    warnings.push('The soap might be too little conditioning (Conditioning < 44)');
   }
   if (properties.conditioning > 69) {
-    warnings.push('Die Seife könnte zu pflegend und weich werden (Pflege > 69)');
+    warnings.push('The soap might be too conditioning and soft (Conditioning > 69)');
   }
   if (properties.bubbly < 14) {
-    warnings.push('Die Seife könnte zu wenig schäumen (Schaum < 14)');
+    warnings.push('The soap might have too little lather (Bubbly < 14)');
   }
   if (properties.bubbly > 46) {
-    warnings.push('Die Seife könnte zu stark schäumen (Schaum > 46)');
+    warnings.push('The soap might have too much lather (Bubbly > 46)');
   }
 
   return warnings;
