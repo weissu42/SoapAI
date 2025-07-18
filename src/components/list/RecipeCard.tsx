@@ -1,5 +1,5 @@
 import React from 'react';
-import { Recipe } from '../types/Recipe';
+import { Recipe } from '../../types/Recipe';
 import RecipeHeader from './RecipeHeader';
 import RecipeOilsList from './RecipeOilsList';
 import RecipeCalculations from './RecipeCalculations';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Recipe } from '../types/Recipe';
-import RecipeCard from './RecipeCard';
+import RecipeCard from './list/RecipeCard';
 import EmptyRecipeList from './EmptyRecipeList';
 
 interface RecipeListProps {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Recipe } from '../types/Recipe';
+import { Recipe } from '../../types/Recipe';
 
 interface RecipeHeaderProps {
   recipe: Recipe;

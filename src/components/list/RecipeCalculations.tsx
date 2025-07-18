@@ -1,5 +1,5 @@
 import React from 'react';
-import { SoapCalculations } from '../types/Recipe';
+import { SoapCalculations } from '../../types/Recipe';
 
 interface RecipeCalculationsProps {
   calculations: SoapCalculations;

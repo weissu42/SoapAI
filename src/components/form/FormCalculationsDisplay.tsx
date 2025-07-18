@@ -1,7 +1,7 @@
 import React from 'react';
 import { SoapCalculations } from '../../types/Recipe';
-import RecipeCalculations from '../RecipeCalculations';
-import RecipeProperties from '../RecipeProperties';
+import RecipeCalculations from '../list/RecipeCalculations';
+import RecipeProperties from '../list/RecipeProperties';
 
 interface FormCalculationsDisplayProps {
   calculations: SoapCalculations;

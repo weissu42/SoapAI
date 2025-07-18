@@ -1,6 +1,6 @@
 import React from 'react';
-import { SoapOil } from '../types/Recipe';
-import { sortOilsByWeight } from '../utils/recipeUtils';
+import { SoapOil } from '../../types/Recipe';
+import { sortOilsByWeight } from '../../utils/recipeUtils';
 
 interface RecipeOilsListProps {
   oils: SoapOil[];
