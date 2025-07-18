@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Recipe, Ingredient, SoapOil } from '../types/Recipe';
 import { OILS_DATABASE } from '../data/oils';
-import { calculateSoapFormula, validateSoapRecipe, SoapIngredient, DEFAULT_SUPERFAT_PERCENTAGE } from '../utils/soapCalculations';
+import { calculateSoapFormula, validateSoapRecipe, SoapIngredient, DEFAULT_SUPERFAT_PERCENTAGE, DEFAULT_WATER_PERCENTAGE } from '../utils/soapCalculations';
 
 interface SoapRecipeFormProps {
   onSubmit: (recipe: Omit<Recipe, 'id'>) => void;
@@ -34,7 +34,8 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
     instructions: '',
     notes: '',
     superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
-    citricAcidPercentage: 0
+    citricAcidPercentage: 0,
+    waterPercentage: DEFAULT_WATER_PERCENTAGE
   });
 
   const [warnings, setWarnings] = useState<string[]>([]);
@@ -56,7 +57,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
         weight: oil.weight
       }));
 
-      const calculations = calculateSoapFormula(soapIngredients, recipe.superfatPercentage, recipe.citricAcidPercentage);
+      const calculations = calculateSoapFormula(soapIngredients, recipe.superfatPercentage, recipe.citricAcidPercentage, recipe.waterPercentage);
       const recipeWarnings = validateSoapRecipe(soapIngredients);
 
       setRecipe(prev => ({
@@ -67,7 +68,7 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
     } else {
       setWarnings([]);
     }
-  }, [recipe.soapOils, recipe.superfatPercentage, recipe.citricAcidPercentage]);
+  }, [recipe.soapOils, recipe.superfatPercentage, recipe.citricAcidPercentage, recipe.waterPercentage]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -80,6 +81,11 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
       setRecipe(prev => ({
         ...prev,
         [name]: parseFloat(value) || 0
+      }));
+    } else if (name === 'waterPercentage') {
+      setRecipe(prev => ({
+        ...prev,
+        [name]: parseFloat(value) || DEFAULT_WATER_PERCENTAGE
       }));
     } else {
       setRecipe(prev => ({
@@ -192,7 +198,8 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
           instructions: '',
           notes: '',
           superfatPercentage: DEFAULT_SUPERFAT_PERCENTAGE,
-          citricAcidPercentage: 0
+          citricAcidPercentage: 0,
+          waterPercentage: DEFAULT_WATER_PERCENTAGE
         });
         setWarnings([]);
       }
@@ -252,6 +259,21 @@ const SoapRecipeForm: React.FC<SoapRecipeFormProps> = ({ onSubmit, initialRecipe
             max="10"
             step="0.1"
             placeholder="0-5% typisch"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="waterPercentage">Wassermenge (% des Ölgewichts):</label>
+          <input
+            type="number"
+            id="waterPercentage"
+            name="waterPercentage"
+            value={recipe.waterPercentage}
+            onChange={handleInputChange}
+            min="25"
+            max="50"
+            step="1"
+            placeholder="30% Standard"
           />
         </div>
 

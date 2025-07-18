@@ -1,6 +1,7 @@
 import { findOilById } from '../data/oils';
 
 export const DEFAULT_SUPERFAT_PERCENTAGE = 10;
+export const DEFAULT_WATER_PERCENTAGE = 30;
 
 export interface SoapIngredient {
   oilId: string;
@@ -35,7 +36,8 @@ export interface SoapCalculationResult {
 export const calculateSoapFormula = (
   ingredients: SoapIngredient[],
   superfatPercentage: number = DEFAULT_SUPERFAT_PERCENTAGE,
-  citricAcidPercentage?: number
+  citricAcidPercentage?: number,
+  waterPercentage: number = DEFAULT_WATER_PERCENTAGE
 ): SoapCalculationResult => {
   let totalOilWeight = 0;
   let totalSapValue = 0;
@@ -91,8 +93,8 @@ export const calculateSoapFormula = (
     totalNaohWeight = Math.round((naohWeight + additionalNaohForCitricAcid) * 100) / 100;
   }
 
-  // Wassermenge berechnen (ca. 38% des Ölgewichts)
-  const waterWeight = Math.round((totalOilWeight * 0.38) * 100) / 100;
+  // Wassermenge berechnen (Standard 30% des Ölgewichts)
+  const waterWeight = Math.round((totalOilWeight * waterPercentage / 100) * 100) / 100;
 
   return {
     totalOilWeight: Math.round(totalOilWeight * 100) / 100,

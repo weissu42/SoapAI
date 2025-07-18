@@ -40,4 +40,5 @@ export interface Recipe {
   notes: string;
   superfatPercentage: number;
   citricAcidPercentage?: number;
+  waterPercentage: number;
 }

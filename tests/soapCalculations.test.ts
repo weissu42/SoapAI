@@ -40,8 +40,8 @@ describe('Soap Calculations', () => {
     const expectedTotalNaoh = Math.round((131.46 + 31.2) * 100) / 100;
     expect(result.naohWeight).toBe(162.66);
     
-    // Wassermenge: 1000g * 0.38 = 380g
-    expect(result.waterWeight).toBe(380);
+    // Wassermenge: 1000g * 0.30 = 300g
+    expect(result.waterWeight).toBe(300);
     
     console.log('Test Results:');
     console.log(`Total Oil Weight: ${result.totalOilWeight}g`);
@@ -68,7 +68,7 @@ describe('Soap Calculations', () => {
     expect(result.naohWeight).toBe(131.46); // Nur NaOH für Öle
     expect(result.citricAcidWeight).toBeUndefined();
     expect(result.additionalNaohForCitricAcid).toBeUndefined();
-    expect(result.waterWeight).toBe(380);
+    expect(result.waterWeight).toBe(300);
     
     console.log('Test Results (without citric acid):');
     console.log(`Total NaOH: ${result.naohWeight}g`);
